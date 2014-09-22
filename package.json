@@ -1,0 +1,21 @@
+{
+  "name": "shopping-list-example",
+  "version": "0.0.1",
+  "description": "basic shopping list using node.js without express",
+  "main": "server.js",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "node.js",
+    "shopping list",
+    "thinkful course"
+  ],
+  "author": "mark calkins",
+  "license": "ISC",
+  "dependencies": ""
+}
