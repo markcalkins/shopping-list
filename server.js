@@ -1,6 +1,7 @@
 var http = require('http');
 var parse = require('url').parse;
 var fs = require('fs');
+// querystring has a parse method to convert request strings to objects
 var qs = require('querystring');
 
 var items = [];
@@ -8,10 +9,14 @@ var items = [];
 var server = http.createServer(function (req, res) {
    switch(req.method) {
       case 'GET':
+         // body here is the equivalent of an index.html with embedded cs & js 
+         // don't have to worry about supporting external files
+         // have to put the whole thing in quotes
          var body = "<!DOCTYPE html>"
             + "<html>"
                + "<head>"
                   + "<title>Shopping List</title>"
+                  // css to style the page 
                   + "<style>"
                      + "body, button { color: #686B6B; font-family: sans-serif; font-size: 1em; font-weight: 400; }"
                      + "input { color: #686B6B; font-family: sans-serif; font-size: 1em; font-weight: 400; padding: 4px; }"
@@ -36,27 +41,42 @@ var server = http.createServer(function (req, res) {
                         + "<div id='shopList'></div>"
                      + "</div>"
                   + "</div>"
+                  // using jQuery because can only send GET & POST requests through HTML 
+                  // need to send AJAX calls for DELETE & PUT 
                   + "<script src='//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>"
                   + "<script type='text/javascript'>"
+                     // this variable supports adding the POST item to the input field
                      + "var input = $('#inputItem');"
                      + "var output = '<ol>';"
                      + "var items = " + JSON.stringify(items) + ";"
                      + "for (var i = 0; i < items.length; i++) {"
                         + "output += '<li id=\"inputItem\">' +"
+                           // using an input field to allow each POST to be edited to support PUT updates
                            + "'<input type=\"text\" name=\"newItem\" id=\"inputItem\" value=\"' + items[i] + '\" />' +"
+                           // form for the delete button
                            + "'<form action=\"/' + i + '\" method=\"delete\"><button id=\"delItem\">x</button></form>' +"
+                           // form for the update button 
                            + "'<form action=\"/' + i + '\" method=\"put\"><button id=\"putItem\">Update</button></form></li>';"
                      + "}"
                      + "output += '</ol>';"
                      + "document.getElementById('shopList').innerHTML = output;"
                      + "$(document).ready(function() {"
+                        // ajax DELETE request
                         + "$('form[method=\"delete\"]').on('submit', function(e) {"
                            + "e.preventDefault();"
-                           + "$.ajax({ url: $(this).attr('action'), type: $(this).attr('method').toUpperCase(), success: function() { window.location.reload(true); }});"
+                           + "$.ajax({ url: $(this).attr('action'),"
+                                    + "type: $(this).attr('method').toUpperCase(),"
+                                    // success method refreshes the screen after the ajax request 
+                                    + "success: function() { window.location.reload(true); }});"
                         + "});"
+                        // ajax PUT request
                         + "$('form[method=\"put\"]').on('submit', function(e) {"
                            + "e.preventDefault();"
-                           + "$.ajax({ url: $(this).attr('action'), type: $(this).attr('method').toUpperCase(), data: {newItem: $(e.target).parent().find('input[name=\"newItem\"]').val()}, success: function() { window.location.reload(true); }});"
+                           + "$.ajax({ url: $(this).attr('action'),"
+                                    + "type: $(this).attr('method').toUpperCase(),"
+                                    // data sent to the server as the update request from the input field (name of newItem)
+                                    + "data: { newItem: $(e.target).parent().find('input[name=\"newItem\"]').val() },"
+                                    + "success: function() { window.location.reload(true); }});"
                         + "});"
                      + "});"
                   + "</script>"
@@ -75,6 +95,7 @@ var server = http.createServer(function (req, res) {
             item += chunk;
          });
          req.on('end', function(){
+            // use qs.parse to eliminate the "item="
             items.push(qs.parse(item).item);
             console.log('added ' + qs.parse(item).item);
             res.writeHead(303, { 'location': '/', });
@@ -110,6 +131,10 @@ var server = http.createServer(function (req, res) {
       break;
    }
 });
+
+// eliminated the file server part of the project
+// it was given to us anyway in Unit 2 
+// and it made the overall project more complex to leave it in
 
 server.listen(9000, function(){
    console.log('listening on 9000');
