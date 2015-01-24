@@ -25,8 +25,8 @@ var server = http.createServer(function (req, res) {
                      + ".sendPost { background-color: #087EFF; border: none; color: #fff; height: 30px; margin-left: 5px; padding: 1px 1px 0 1px; width: 100px; }"
                      + ".list { background-color: #e3e3e3; height: auto; margin-top: 36px; padding: 3px 20px 10px; width: 400px; }"
                      + "#inputItem { margin-bottom: 4px; }" 
-                     + "#putItem { background-color: #666; border: none; color: #fff; float: right; margin: -34px 38px 0 0; padding: 6px 6px; width: 90px; }"
-                     + "#delItem { background-color: #ff6464; border: none; color: #fff; float: right; margin: -34px 2px 0 0; padding: 6px 10px; }" 
+                     + "#putItem { background-color: #666; border: none; color: #fff; float: right; margin: -32px 38px 0 0; padding: 6px 6px; width: 90px; }"
+                     + "#delItem { background-color: #ff6464; border: none; color: #fff; float: right; margin: -32px 2px 0 0; padding: 6px 10px; }" 
                   + "</style>"
                + "</head>"
                + "<body>"
@@ -41,8 +41,7 @@ var server = http.createServer(function (req, res) {
                         + "<div id='shopList'></div>"
                      + "</div>"
                   + "</div>"
-                  // using jQuery because can only send GET & POST requests through HTML 
-                  // need to send AJAX calls for DELETE & PUT 
+                  // using jQuery to send AJAX calls for DELETE & PUT 
                   + "<script src='//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>"
                   + "<script type='text/javascript'>"
                      // this variable supports adding the POST item to the input field
@@ -132,10 +131,7 @@ var server = http.createServer(function (req, res) {
    }
 });
 
-// eliminated the file server part of the project
-// it was given to us anyway in Unit 2 
-// and it made the overall project more complex to leave it in
-
-server.listen(9000, function(){
-   console.log('listening on 9000');
+var port = process.env.PORT || 3000
+server.listen(port, function(){
+   console.log('listening on ' + port);
 });
